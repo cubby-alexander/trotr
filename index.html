@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/style.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script defer src="./js/script.js"></script>
+    <title>Trotr</title>
+</head>
+<body>
+    <header>
+        <h1>trotr</h1>
+    </header>
+    <main>
+        <div id="map"></div>
+        <label for="address">Location</label><input id="address">Set Travel Location</input>
+        <button id="location">Submit</button>
+    </main>
+    <footer></footer>
+    <script async
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBiFjoHtE3CXE8DdAn6gMuj9QAFox9crIU&libraries=geometry,places&callback=initMap">
+    </script>
+</body>
+</html>
