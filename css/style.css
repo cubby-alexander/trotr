@@ -54,7 +54,7 @@ main {
     font-size: 22px;
 }
 
-#dates, #location-search, #fence {
+#dates, #location-search, #fence, #confirm {
     margin: 15px 0 30px 0;
     width: 100%;
 }
@@ -78,8 +78,29 @@ label input {
     padding: 4px;
 }
 
-label input::placeholder {
-    font-size: 12px;
+input::-webkit-datetime-edit, label input::placeholder {
+    font-size: 13.3px;
+    font-weight: 300;
+    color: #313131;
+    font-family: 'Prompt', sans-serif;
+}
+
+#location-search label {
+    width: 80%;
+}
+
+#fence-submit {
+    color: #f0f8f2;
+    padding: 6px 8px;
+    margin: 0;
+    width: 18%;
+    background-color: #3b814a;
+    border-radius: 3px;
+    border: 0;
+}
+
+#map {
+    margin: 20px 0 0 0;
 }
 
 /* Tooltip container */
@@ -87,27 +108,55 @@ label input::placeholder {
     position: relative;
     display: inline-block;
     border-bottom: 1px dotted black;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 /* Tooltip text */
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
+    width: 80vw;
+    background-color: #383838;
+    color: #e7e7e7;
     text-align: center;
-    padding: 5px 0;
-    border-radius: 6px;
+    padding: 5px 5px;
+    border-radius: 4px;
+    font-weight: 200;
+    font-size: 12px;
 
     /* Position the tooltip text - see examples below! */
     position: absolute;
+    top: 25px;
+    left: 0;
+    right: 0;
+    margin: auto;
     z-index: 1;
 }
 
 /* Show the tooltip text when you mouse over the tooltip container */
 .tooltip:hover .tooltiptext {
     visibility: visible;
+}
+
+#confirm {
+    display: flex;
+    flex-direction: column;
+}
+
+#travel-summary {
+    font-size: 14px;
+    font-weight: 300;
+}
+
+#confirm-trip {
+    color: #f0f8f2;
+    padding: 15px 20px;
+    font-size: 14px;
+    margin: 30px 0;
+    background-color: #002a00;
+    border-radius: 3px;
+    border: 0;
+    font-weight: 100;
+    align-self: center;
 }
 
 .contact {

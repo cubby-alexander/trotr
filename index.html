@@ -22,7 +22,7 @@
     <main>
         <h1 id="title">Add New Trip</h1>
         <div id="dates">
-            <h3>1. Select Travel Dates</h3>
+            <h3>1. Select Your Travel Dates</h3>
             <label>
                 <span>Start Date</span>
                 <input type="date" id="start" name="trip-start"
@@ -41,20 +41,32 @@
             <h3>2. Select Your Destination</h3>
             <label for="address">
                 <span>Location</span>
-                <input id="address" type="text" placeholder="Search" />
+                <input id="address" type="text" placeholder="City or Town" />
             </label>
-            <button id="fence-submit">Submit</button>
+            <button id="fence-submit"><i class="fas fa-map-pin"></i></button>
             <div id="map"></div>
         </div>
 
         <div id="fence">
-            <h3>3. Set "Social Fence"</h3>
+            <h3>3. Set Your "Social Fence" Above</h3>
             <div class="tooltip">What is a "social fence"?
-                <span class="tooltiptext">Your social fence is the area you're willing to visit during your trip.</span>
+                <span class="tooltiptext">
+                    Your social fence is the area you expect to visit on this trip. It is
+                    literally, "How far I'm willing to travel to meet someone when
+                    I'm here."
+                    <br />
+                    <br />
+                    The social fence is set to a 5 miles radius by default. To change
+                    this, drag the borders of the circle in the map above.
+                </span>
             </div>
         </div>
 
-        <p id="travel-summary"></p>
+        <div id="confirm">
+            <h3>4. Confirm Your Itinerary</h3>
+            <p id="travel-summary">Your trip has not been defined. Enter a destination above.</p>
+            <button id="confirm-trip">Confirm</button>
+        </div>
 
         <div class="contact">
             <image class="avatar" src="./images/Tyrion.png" />

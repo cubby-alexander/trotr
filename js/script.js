@@ -21,8 +21,8 @@ let destinationText;
 let socialFence;
 let radiusText;
 let initialLatLng = {
-    lat: 40.745769083889726,
-    lng: -73.99396703570228
+    lat: 39.61532527777455,
+    lng: -95.5801062378202
 };
 
 
@@ -158,6 +158,7 @@ let $tripStart = $('#start');
 let $tripEnd = $('#end')
 let $travelSummary = $('#travel-summary');
 let $map = $('#map');
+let $confirmTrip = $('#confirm-trip');
 
 
 /*----- event listeners -----*/
@@ -166,15 +167,23 @@ $fenceSubmit.on('click', () => {
     codePlace(autocomplete.getPlace().place_id);
 });
 
+$confirmTrip.on('click', () => {
+    if (isTripValid()) {
+        console.log("It's lit!");
+    } else {
+        console.log("It's not lit...")
+    }
+})
+
 $tripStart.on('change', () => {
     trip.start = new Date (event.target.value.replace('-', '/'));
-    console.log(trip.start);
+    setTravelString();
 });
 
 $tripEnd.on('change', () => {
     trip.end = new Date (event.target.value.replace('-', '/'));
-    console.log(trip.end);
-})
+    setTravelString();
+});
 
 $address.keydown((event) => {
     var keycode = (event.keyCode ? event.keyCode : event.which);
@@ -182,7 +191,7 @@ $address.keydown((event) => {
         console.log(keycode, event);
         codePlace(autocomplete.getPlace().place_id);
     }
-})
+});
 
 $('h1').on('click', () => {
     db.forEach(contact => {
@@ -222,7 +231,7 @@ $('h1').on('click', () => {
 function initMap() {
     map = new google.maps.Map(document.getElementById("map"), {
         center: initialLatLng,
-        zoom: 8,
+        zoom: 3,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
@@ -267,7 +276,7 @@ function codeLatLng(givenCoordinates) {
 
 function setFence(location) {
     // Gets miles from input field
-    let defaultRadius = 5;
+    let defaultRadius = 5.2;
 
     // Converts miles >> kilometers >> meters for Maps API radius
     let fenceRadius = (defaultRadius * 1.60934) * 1000;
@@ -275,6 +284,10 @@ function setFence(location) {
     // Converts radius meters to degrees for lat/lng comparison
     let degreesPerMeter = 0.00001
     let degreeReference = fenceRadius * degreesPerMeter;
+
+    if (socialFence !== undefined) {
+        socialFence.setMap(null);
+    }
 
     socialFence = new google.maps.Circle({
         strokeColor: "#1773b4",
@@ -305,10 +318,6 @@ function setFence(location) {
     google.maps.event.addListener(socialFence, 'center_changed', function() {
         codeLatLng(socialFence.center);
     })
-}
-
-function roundHalf(num) {
-    return Math.round(num*2)/2;
 }
 
 function visitorAndResidentCompare(primaryDates, secondaryDates) {
@@ -344,10 +353,23 @@ function arePointsNear(checkPoint, centerPoint, km) {
     return Math.sqrt(dx * dx + dy * dy) <= km;
 }
 
+// UI/UX Functions
+
+function isTripValid() {
+    return (trip.start !== 0 & trip.end !== 0 && socialFence !== undefined);
+}
+
 function setTravelString() {
-    $travelSummary.text(`Your trip to ${destinationText} is scheduled for ${trip.start} to ${trip.end}.
-    
-    Contacts within approximately ${radiusText} miles will be notified of your itinerary.`);
+    if (destinationText !== undefined) {
+        let notice = (trip.start !== "" && trip.end !== "") ?
+            `Your trip to ${destinationText} is scheduled for ${trip.start.toDateString()} to ${trip.end.toDateString()}.
+         <br />
+        <br />
+        Based on your social fence, contacts within approximately ${radiusText} miles will be notified of your itinerary.` :
+            `Your trip to ${destinationText} has not been scheduled. Please select start and end dates above.`
+
+        $travelSummary.html(`${notice}`);
+    }
 }
 
 // HTML Assignments
