@@ -3,15 +3,111 @@
     margin: 0;
 }
 
-#map {
-    height: 200px;
-}
-
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
     font-family: 'Prompt', sans-serif;
+    background-color: #fdfffd;
+}
+
+h1 {
+    font-weight: 500;
+}
+
+h3 {
+    font-weight: 300;
+    margin: 0 0 5px 0;
+}
+
+header {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: space-between;
+    height: 60px;
+    background-color: #002a00;
+}
+
+.hamburger {
+    color: #f0f8f2;
+    padding: 0 20px;
+}
+
+#logo-image {
+    height: 40px;
+    padding: 0 10px;
+}
+
+main {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+#title {
+    align-self: center;
+    margin: 25px 0 5px 0;
+    font-size: 22px;
+}
+
+#dates, #location-search, #fence {
+    margin: 15px 0 30px 0;
+    width: 100%;
+}
+
+label {
+    font-size: 11px;
+    font-weight: 300;
+    color: #848484;
+    display: inline-block;
+    width: 49%;
+    padding: 0;
+}
+
+label span {
+    display: block;
+    margin: 0 2px;
+}
+
+label input {
+    width: 90%;
+    padding: 4px;
+}
+
+label input::placeholder {
+    font-size: 12px;
+}
+
+/* Tooltip container */
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    font-size: 12px;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+    border-radius: 6px;
+
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+    visibility: visible;
 }
 
 .contact {
@@ -20,8 +116,8 @@ html, body {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
-    margin: 20px auto;
-    width: 90%;
+    margin: 20px 0;
+    width: 100%;
 }
 
 .avatar {
@@ -34,24 +130,112 @@ html, body {
     flex-direction: column;
     justify-content: center;
     color: #1c1c1c;
-    width: 50%;
+    width: 40%;
 }
 
 .interactors {
+    width: 30%;
 }
 
-button.interactors {
+.interactors button {
+    padding: 10px;
+    margin: 0 3px;
+    background-color: #3b814a;
+    border-radius: 3px;
+    border: 0px;
+}
 
+.interactors button:hover {
+    color: rgba(0,0,0,.8);
+}
+
+#message, #connect {
+    color: #f0f8f2;
+}
+
+#message {
+    background-color: #3b814a;
+}
+
+#connect {
+    background-color: #002a00;
 }
 
 #name {
     font-weight: 500;
-    font-size: 18px;
+    font-size: 14px;
 }
 
 #location, #overlap {
     color: #505050;
     font-weight: 300;
-    font-size: 12px;
+    font-size: 11px;
     margin-left: 3px;
+}
+
+.footer-dark {
+    padding:50px 0;
+    color:#f0f9ff;
+    background-color:#282d32;
+}
+
+.footer-dark h3 {
+    margin-top:0;
+    margin-bottom:12px;
+    font-weight: 400;
+    font-size: 16px;
+}
+
+.footer-dark ul {
+    padding:0;
+    list-style:none;
+    font-weight: 300;
+    line-height:1.6;
+    font-size:14px;
+    margin-bottom:0;
+}
+
+.footer-dark ul a {
+    color:inherit;
+    text-decoration:none;
+    opacity:0.6;
+}
+
+.footer-dark ul a:hover {
+    opacity:0.8;
+}
+
+@media (max-width:767px) {
+    .footer-dark .item:not(.social) {
+        text-align:center;
+        padding-bottom:20px;
+    }
+}
+
+.footer-dark .item.text {
+    margin-bottom:36px;
+}
+
+@media (max-width:767px) {
+    .footer-dark .item.text {
+        margin-bottom:0;
+    }
+}
+
+.footer-dark .item.text p {
+    opacity:0.6;
+    margin-bottom:0;
+    font-weight: 300;
+}
+
+#footer-logo {
+    height: 40px;
+}
+
+.footer-dark .copyright {
+    text-align:center;
+    padding-top:24px;
+    opacity:0.3;
+    font-size:13px;
+    margin-bottom:0;
 }

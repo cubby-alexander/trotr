@@ -11,19 +11,19 @@
 
 let map;
 let geocoder;
-let socialFence;
-let dummy = {
-    lat: 40.745769083889726,
-    lng: -73.99396703570228
-};
-let dummyStartDate = new Date ("2021/05/24");
-let dummyEndDate = new Date ("2021/05/28");
-console.log(dummyStartDate);
-let latLng;
+let autocomplete;
 let trip = {
     start: '',
     end: '',
-}
+};
+let geocodedLatLng;
+let destinationText;
+let socialFence;
+let radiusText;
+let initialLatLng = {
+    lat: 40.745769083889726,
+    lng: -73.99396703570228
+};
 
 
 /*----- app's state (variables) -----*/
@@ -152,16 +152,18 @@ let presentContacts = [];
 
 /*----- cached element references -----*/
 let $main = $('main');
-let $address = $('#address');
+let $address = $('input#address');
 let $fenceSubmit = $('#fence-submit');
 let $tripStart = $('#start');
 let $tripEnd = $('#end')
+let $travelSummary = $('#travel-summary');
+let $map = $('#map');
 
 
 /*----- event listeners -----*/
 
 $fenceSubmit.on('click', () => {
-    codeAddress($address.val());
+    codePlace(autocomplete.getPlace().place_id);
 });
 
 $tripStart.on('change', () => {
@@ -172,6 +174,14 @@ $tripStart.on('change', () => {
 $tripEnd.on('change', () => {
     trip.end = new Date (event.target.value.replace('-', '/'));
     console.log(trip.end);
+})
+
+$address.keydown((event) => {
+    var keycode = (event.keyCode ? event.keyCode : event.which);
+    if (keycode === 13) {
+        console.log(keycode, event);
+        codePlace(autocomplete.getPlace().place_id);
+    }
 })
 
 $('h1').on('click', () => {
@@ -210,27 +220,48 @@ $('h1').on('click', () => {
 /*----- functions -----*/
 
 function initMap() {
-    geocoder = new google.maps.Geocoder();
     map = new google.maps.Map(document.getElementById("map"), {
-        center: dummy,
+        center: initialLatLng,
         zoom: 8,
         mapTypeControl: false,
         streetViewControl: false,
         fullscreenControl: false,
     });
 
+    geocoder = new google.maps.Geocoder();
+
+    autocomplete = new google.maps.places.Autocomplete(document.querySelector('input#address'));
+
+    google.maps.event.addListener(autocomplete, 'places_changed', function(event) {
+        codePlace(autocomplete.getPlace().place_id);
+    })
+
     google.maps.event.addListener(map, 'click', function(event) {
-        console.log(event.latLng.lat(), event.latLng.lng(),);
+        console.log(event.latLng.lat(), event.latLng.lng());
     });
 }
 
-function codeAddress(givenAddress) {
-    geocoder.geocode( { 'address': givenAddress}, function(results, status) {
-        console.log("noise", results);
-        latLng = results[0].geometry.location;
-        map.setCenter(latLng);
+function codePlace(givenAddress) {
+    geocoder.geocode( { 'placeId': givenAddress}, function(results, status) {
+        let locality = results[0].address_components.find(component => component.types.find(type => type === 'locality')).long_name;
+        let provinceOrState = results[0].address_components.find(component => component.types.find(type => type === "administrative_area_level_1")).short_name;
+        destinationText = `${locality}, ${provinceOrState}`;
+        geocodedLatLng = results[0].geometry.location;
+        map.setCenter(geocodedLatLng);
         map.setZoom(10);
-        setFence(latLng);
+        setFence(geocodedLatLng);
+        setTravelString();
+    })
+}
+
+function codeLatLng(givenCoordinates) {
+    let coordinates = {lat: givenCoordinates.lat(), lng: givenCoordinates.lng()}
+    geocoder.geocode({location: coordinates}, function(results, status) {
+        console.log(results);
+        let locality = results[0].address_components.find(component => component.types.find(type => type === 'locality' || type === 'sublocality')).long_name;
+        let provinceOrState = results[0].address_components.find(component => component.types.find(type => type === "administrative_area_level_1")).short_name;
+        destinationText = `${locality}, ${provinceOrState}`;
+        setTravelString();
     })
 }
 
@@ -257,6 +288,8 @@ function setFence(location) {
         radius: fenceRadius,
     });
 
+    radiusText = Math.floor((socialFence.radius / 1000) * 0.621371 * 2) / 2;
+
     google.maps.event.addListener(socialFence, 'radius_changed', function() {
         console.log(db.filter(friend => arePointsNear(
             {lat: friend.domestic.lat,
@@ -265,7 +298,13 @@ function setFence(location) {
             lng: socialFence.center.lng()},
             socialFence.radius / 1000
             )));
+        radiusText = Math.floor((socialFence.radius / 1000) * 0.621371 * 2) / 2;
+        setTravelString();
     });
+
+    google.maps.event.addListener(socialFence, 'center_changed', function() {
+        codeLatLng(socialFence.center);
+    })
 }
 
 function roundHalf(num) {
@@ -305,6 +344,15 @@ function arePointsNear(checkPoint, centerPoint, km) {
     return Math.sqrt(dx * dx + dy * dy) <= km;
 }
 
+function setTravelString() {
+    $travelSummary.text(`Your trip to ${destinationText} is scheduled for ${trip.start} to ${trip.end}.
+    
+    Contacts within approximately ${radiusText} miles will be notified of your itinerary.`);
+}
+
 // HTML Assignments
 $tripStart.attr('min', `${new Date().toISOString()}`, 'value', `${new Date().toISOString()}`);
 $tripEnd.attr('min', `${new Date().toISOString()}`, 'value', `${new Date().toISOString()}`);
+
+let $mapWidth = $map.width();
+$map.css('height', `${$mapWidth}px` );
