@@ -17,38 +17,40 @@
 <body>
     <header>
         <img src="images/logo.png" id="logo-image" />
-        <i class="fas fa-bars hamburger"></i>
+        <i class="fas fa-bars hamburger fa-lg"></i>
     </header>
     <main>
         <h1 id="title">Add New Trip</h1>
         <div id="dates">
-            <h3>1. Select Your Travel Dates</h3>
-            <label>
-                <span>Start Date</span>
-                <input type="date" id="start" name="trip-start"
-                       value=""
-                       min="">
-            </label>
-            <label>
-                <span>End Date</span>
-                <input type="date" id="end" name="trip-end"
-                       value=""
-                       min="">
-            </label>
+            <h3>Select Your Travel Dates</h3>
+            <div id="date-pickers">
+                <label>
+                    <span>Start Date</span>
+                    <input type="date" id="start" name="trip-start"
+                           value=""
+                           min="">
+                </label>
+                <label>
+                    <span>End Date</span>
+                    <input type="date" id="end" name="trip-end"
+                           value=""
+                           min="">
+                </label>
+            </div>
         </div>
 
         <div id="location-search">
-            <h3>2. Select Your Destination</h3>
+            <h3>Select Your Destination</h3>
             <label for="address">
                 <span>Location</span>
                 <input id="address" type="text" placeholder="City or Town" />
             </label>
-            <button id="fence-submit"><i class="fas fa-map-pin"></i></button>
+            <button id="fence-submit"><i class="fas fa-map-pin fa-lg"></i></button>
             <div id="map"></div>
         </div>
 
         <div id="fence">
-            <h3>3. Set Your "Social Fence" Above</h3>
+            <h3>Set Your "Social Fence" Above</h3>
             <div class="tooltip">What is a "social fence"?
                 <span class="tooltiptext">
                     Your social fence is the area you expect to visit on this trip. It is
@@ -63,75 +65,12 @@
         </div>
 
         <div id="confirm">
-            <h3>4. Confirm Your Itinerary</h3>
-            <p id="travel-summary">Your trip has not been defined. Enter a destination above.</p>
+            <h3>Confirm Your Itinerary</h3>
+            <p id="travel-summary">You have not selected an itinerary. Enter travel dates and your destination above.</p>
             <button id="confirm-trip">Confirm</button>
         </div>
 
-        <div class="contact">
-            <image class="avatar" src="./images/Tyrion.png" />
-            <div class="descriptors">
-                <p id="name">Tyrion Lannister</p>
-                <p id="location">New York, NY</p>
-                <p id="overlap">Present for duration</p>
-            </div>
-            <div class="interactors">
-                <button id="message"><i class="fas fa-comment-alt fa-lg"></i></button>
-                <button id="connect"><i class="fas fa-user-friends fa-lg"></i></button>
-            </div>
-        </div>
 
-        <div class="contact">
-            <image class="avatar" src="./images/Cersei.png" />
-            <div class="descriptors">
-                <p id="name">Cersei Lannister</p>
-                <p id="location">New York, NY</p>
-                <p id="overlap">Present for duration</p>
-            </div>
-            <div class="interactors">
-                <button id="message"><i class="fas fa-comment-alt fa-lg"></i></button>
-                <button id="connect"><i class="fas fa-user-friends fa-lg"></i></button>
-            </div>
-        </div>
-
-        <div class="contact">
-            <image class="avatar" src="./images/Tywin.png" />
-            <div class="descriptors">
-                <p id="name">Tywin Lannister</p>
-                <p id="location">New York, NY</p>
-                <p id="overlap">Present for duration</p>
-            </div>
-            <div class="interactors">
-                <button id="message"><i class="fas fa-comment-alt fa-lg"></i></button>
-                <button id="connect"><i class="fas fa-user-friends fa-lg"></i></button>
-            </div>
-        </div>
-
-        <div class="contact">
-            <image class="avatar" src="./images/Margaery.png" />
-            <div class="descriptors">
-                <p id="name">Margaery Tyrell</p>
-                <p id="location">Queens, NY</p>
-                <p id="overlap">Present for duration</p>
-            </div>
-            <div class="interactors">
-                <button id="message"><i class="fas fa-comment-alt fa-lg"></i></button>
-                <button id="connect"><i class="fas fa-user-friends fa-lg"></i></button>
-            </div>
-        </div>
-
-        <div class="contact">
-            <image class="avatar" src="./images/Sansa.png" />
-            <div class="descriptors">
-                <p id="name">Sansa Stark</p>
-                <p id="location">Brooklyn, NY</p>
-                <p id="overlap">Present for duration</p>
-            </div>
-            <div class="interactors">
-                <button id="message"><i class="fas fa-comment-alt fa-lg"></i></button>
-                <button id="connect"><i class="fas fa-user-friends fa-lg"></i></button>
-            </div>
-        </div>
     </main>
     <footer class="footer-dark">
         <div class="container">

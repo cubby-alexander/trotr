@@ -1,18 +1,10 @@
 
-
-/* Pseudocode
-    Determine visiting social fence
-
-
- */
-
-
 /*----- constants -----*/
 
 let map;
 let geocoder;
 let autocomplete;
-let trip = {
+let visitorTrip = {
     start: '',
     end: '',
 };
@@ -24,9 +16,10 @@ let initialLatLng = {
     lat: 39.61532527777455,
     lng: -95.5801062378202
 };
+let months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'Åugust', 'September', 'October', 'November', 'December']
 
 
-/*----- app's state (variables) -----*/
+/*----- app's state (letiables) -----*/
 const db = [
     {
         name: "Tyrion Lannister",
@@ -43,8 +36,8 @@ const db = [
                 lng: -71.40129919567369,
                 fenceRadius: 25,
                 name: "New Orleans",
-                start: new Date ('2021/05/10'),
-                end: new Date ('2021/05/18')
+                start: new Date ('2021/06/10'),
+                end: new Date ('2021/06/18')
             }],
         ],
     },
@@ -117,12 +110,12 @@ const db = [
         },
         travel: [
             [{
-                lat: 41.839428410718945,
-                lng: -71.40129919567369,
+                lat: 40.745769083889726,
+                lng: -73.99396703570228,
                 fenceRadius: 25,
-                name: "New Orleans",
-                start: new Date ('2021/05/10'),
-                end: new Date ('2021/05/18')
+                name: "New York",
+                start: new Date ('2021/06/07'),
+                end: new Date ('2021/06/113')
             }],
         ],
     },
@@ -138,12 +131,12 @@ const db = [
         },
         travel: [
             [{
-                lat: 41.839428410718945,
-                lng: -71.40129919567369,
+                lat: 40.745769083889726,
+                lng: -73.99396703570228,
                 fenceRadius: 13,
                 name: "Brooklyn, NY",
-                start: new Date ('2021/05/10'),
-                end: new Date ('2021/05/18')
+                start: new Date ('2021/06/07'),
+                end: new Date ('2021/06/13')
             }],
         ],
     }
@@ -176,55 +169,27 @@ $confirmTrip.on('click', () => {
 })
 
 $tripStart.on('change', () => {
-    trip.start = new Date (event.target.value.replace('-', '/'));
+    visitorTrip.start = new Date (event.target.value.replace('-', '/'));
     setTravelString();
 });
 
 $tripEnd.on('change', () => {
-    trip.end = new Date (event.target.value.replace('-', '/'));
+    visitorTrip.end = new Date (event.target.value.replace('-', '/'));
     setTravelString();
 });
 
 $address.keydown((event) => {
-    var keycode = (event.keyCode ? event.keyCode : event.which);
+    let keycode = (event.keyCode ? event.keyCode : event.which);
     if (keycode === 13) {
         console.log(keycode, event);
         codePlace(autocomplete.getPlace().place_id);
     }
 });
 
-$('h1').on('click', () => {
-    db.forEach(contact => {
-        let checkpoint = {
-            lat: contact.domestic.lat,
-            lng: contact.domestic.lng
-        };
-        let centerpoint = {
-            lat: socialFence.center.lat(),
-            lng: socialFence.center.lng()
-        };
-        let distanceInKilo = socialFence.radius / 1000;
-        if (arePointsNear(checkpoint, centerpoint, distanceInKilo)) {
-            contact.travel.forEach(residentTrip => {
-                console.log(contact)
-                if (visitorAndResidentCompare({start: trip.start, end: trip.end},
-                     {start: residentTrip[0].start, end: residentTrip[residentTrip.length - 1].end})) {
-                    console.log("No trip conflict, visitor and resident will be present for" +
-                        "duration of visitor trip.",);
-                    presentContacts.push({name: contact.name, image: contact.image, location: contact.domestic.name, duration: "Present For Duration"})
-                } else {
-                    return visitorAndResidentOverlap(
-                        {start: trip.start, end: trip.end},
-                        {start: residentTrip[0].start, end: residentTrip[residentTrip.length - 1].end}
-                    )}
-            })
-        }
-    })
-    $main.append(`<ul></ul>`);
-    presentContacts.forEach(contact => {
-        $('main ul').append(`<li>${contact.name}</li>`)
-    })
-});
+$confirmTrip.on('click', () => {
+    identifyPresentContacts();
+    render();
+})
 
 /*----- functions -----*/
 
@@ -304,13 +269,6 @@ function setFence(location) {
     radiusText = Math.floor((socialFence.radius / 1000) * 0.621371 * 2) / 2;
 
     google.maps.event.addListener(socialFence, 'radius_changed', function() {
-        console.log(db.filter(friend => arePointsNear(
-            {lat: friend.domestic.lat,
-            lng: friend.domestic.lng},
-            {lat: socialFence.center.lat(),
-            lng: socialFence.center.lng()},
-            socialFence.radius / 1000
-            )));
         radiusText = Math.floor((socialFence.radius / 1000) * 0.621371 * 2) / 2;
         setTravelString();
     });
@@ -320,49 +278,145 @@ function setFence(location) {
     })
 }
 
-function visitorAndResidentCompare(primaryDates, secondaryDates) {
-    return (secondaryDates.end < primaryDates.start || secondaryDates.start > primaryDates.end)
+const identifyPresentContacts = () => {
+    presentContacts = [];
+    let socialFenceRadiusInKilo = socialFence.radius / 1000;
+    let visitorCenterpoint = {
+        lat: socialFence.center.lat(),
+        lng: socialFence.center.lng()
+    };
+    db.forEach(contact => {
+        console.log(presentContacts)
+        let residenceCheckpoint = {
+            lat: contact.domestic.lat,
+            lng: contact.domestic.lng
+        };
+        // Does the contact live within the social fence set by the user?
+        if (arePointsNear(residenceCheckpoint, visitorCenterpoint, socialFenceRadiusInKilo)) {
+            // Is the resident contact travelling during the user's visit?
+            if (!residentIsTraveling(contact)) {
+                presentContacts.push({name: contact.name, image: contact.image, location: contact.domestic.name, duration: "Present for duration"})
+            } else {
+                let overlapDetails = visitorAndResidentOverlap(contact.travel);
+                console.log(overlapDetails, contact.name);
+                if (overlapDetails.overlap) {
+                    presentContacts.push({name: contact.name, image: contact.image, location: contact.domestic.name, duration: overlapDetails.duration});
+                }
+            }
+        } else {
+            contact.travel.forEach((trip) => {
+                trip.forEach((destination) => {
+                    let travelCheckpoint = {
+                        lat: destination.lat,
+                        lng: destination.lng
+                    }
+                    if (arePointsNear(travelCheckpoint, visitorCenterpoint, socialFenceRadiusInKilo)) {
+                        let overlap = false;
+                        let contactArrival = "";
+                        let contactDeparture = "";
+                        if (destination.start > visitorTrip.start && destination.start < visitorTrip.end) {
+                            overlap = true;
+                            contactArrival = `Arrives ${months[destination.start.getMonth()]} ${destination.start.getDate()}`;
+                        }
+                        if (destination.end < visitorTrip.end && destination.end > visitorTrip.start) {
+                            overlap = true
+                            contactDeparture = `Departs ${months[destination.end.getMonth()]} ${destination.end.getDate()}`;
+                        }
+                        if (overlap) {
+                            presentContacts.push({name: contact.name, image: contact.image, location: destination.name, duration: `${contactArrival} ${contactDeparture}`})
+                            console.log(contact.name, `${contactArrival} ${contactDeparture}`)
+                        }
+                    }
+                })
+            })
+        }
+    })
+};
+
+function residentIsTraveling(contact) {
+    let isTraveling = false;
+    contact.travel.forEach((trip) => {
+        if ((trip[trip.length - 1].end > visitorTrip.start && trip[trip.length - 1].end < visitorTrip.end) ||
+            (trip[0].start > visitorTrip.start && trip[0].start < visitorTrip.end)) {
+            isTraveling = true;
+        }
+    })
+    return (isTraveling)
 }
 
-function visitorAndResidentOverlap(visitorDates, residentDates) {
-    if (visitorDates.start < residentDates.start) {
-        if (visitorDates.end > residentDates.end) {
+function visitorAndResidentOverlap(residentTravel) {
+    let travelStatus = {overlap: false, duration: ""};
+    let residentTrip = residentTravel.find(trip => ((trip[0].start > visitorTrip.start && trip[0].start < visitorTrip.end) ||
+        (trip[trip.length - 1].end > visitorTrip.start && trip[trip.length - 1].end < visitorTrip.end)
+    ));
+    let residentStart = {value: residentTrip[0].start, string: `${months[residentTrip[0].start.getMonth()]} ${residentTrip[0].start.getDate()}`};
+    let residentEnd = {value: residentTrip[residentTrip.length - 1].end, string: `${months[residentTrip[residentTrip.length - 1].end.getMonth()]} ${residentTrip[residentTrip.length - 1].end.getDate()}`}
+    if (visitorTrip.start < residentStart.value) {
+        if (visitorTrip.end > residentEnd.value) {
+            travelStatus = {...travelStatus, overlap: true, duration: `Leaves ${residentStart.string} and Returns ${residentEnd.string}`}
             console.log('visitor arrives before resident departs and leaves after' +
                 ' resident returns; overlap both sides, display resident departure and return');
-        } else if (visitorDates.end <= residentDates.end) {
+        } else if (visitorTrip.end <= residentEnd.value) {
+            travelStatus = {...travelStatus, overlap: true, duration: `Leaves ${residentStart.string}`}
             console.log('visitor arrives before resident departs, but leaves before ' +
                 'resident returns; overlap at beginning, display resident departure');
         }
-    } else if (visitorDates.start >= residentDates.start) {
-        if (visitorDates.end > residentDates.end) {
+    } else if (visitorTrip.start >= residentStart.value) {
+        if (visitorTrip.end > residentEnd.value) {
+            travelStatus = {...travelStatus, overlap: true, duration: `Arrives ${residentEnd.string}`}
             console.log('visitor arrives after resident departs, but leaves after resident returns;' +
                 ' overlap on back side; display resident return')
-        } else if (visitorDates.end <= residentDates.end) {
+        } else if (visitorTrip.end <= residentEnd.value) {
             console.log('visitor arrives after resident departs and departs before resident returns;' +
                 ' no overlap')
         }
     }
+    console.log(travelStatus);
+    return travelStatus;
 }
 
 function arePointsNear(checkPoint, centerPoint, km) {
-    var ky = 40000 / 360;
-    var kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
-    var dx = Math.abs(centerPoint.lng - checkPoint.lng) * kx;
-    var dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
-    console.log(checkPoint, centerPoint, ky, kx, dx, dy, Math.sqrt(dx * dx + dy * dy) <= km)
+    let ky = 40000 / 360;
+    let kx = Math.cos(Math.PI * centerPoint.lat / 180.0) * ky;
+    let dx = Math.abs(centerPoint.lng - checkPoint.lng) * kx;
+    let dy = Math.abs(centerPoint.lat - checkPoint.lat) * ky;
     return Math.sqrt(dx * dx + dy * dy) <= km;
+}
+
+function render() {
+    addContactList();
+}
+
+function addContactList() {
+    $('div.contact').fadeOut(300, function(){ $(this).remove()});
+    presentContacts.forEach(contact => {
+        $(`
+            <div class="contact">
+                <image class="avatar" src="${contact.image}" />
+                <div class="descriptors">
+                    <p id="name">${contact.name}</p>
+                    <p id="location">${contact.location}</p>
+                    <p id="overlap">${contact.duration}</p>
+                </div>
+                <div class="interactors">
+                    <button id="message"><i class="fas fa-comment-alt fa-lg"></i></button>
+                    <button id="connect"><i class="fas fa-user-friends fa-lg"></i></button>
+                </div>
+            </div>
+        `).hide().appendTo($main).fadeIn(300)
+    })
 }
 
 // UI/UX Functions
 
 function isTripValid() {
-    return (trip.start !== 0 & trip.end !== 0 && socialFence !== undefined);
+    return (visitorTrip.start !== 0 & visitorTrip.end !== 0 && socialFence !== undefined);
 }
 
 function setTravelString() {
     if (destinationText !== undefined) {
-        let notice = (trip.start !== "" && trip.end !== "") ?
-            `Your trip to ${destinationText} is scheduled for ${trip.start.toDateString()} to ${trip.end.toDateString()}.
+        let notice = (visitorTrip.start !== "" && visitorTrip.end !== "") ?
+            `Your trip to ${destinationText} is scheduled for ${visitorTrip.start.toDateString()} to ${visitorTrip.end.toDateString()}.
          <br />
         <br />
         Based on your social fence, contacts within approximately ${radiusText} miles will be notified of your itinerary.` :
@@ -372,9 +426,24 @@ function setTravelString() {
     }
 }
 
+function dateMin() {
+    let today = new Date();
+    let dd = today.getDate();
+    let mm = today.getMonth()+1; //January is 0!
+    let yyyy = today.getFullYear();
+    if (dd < 10) {
+        dd = '0' + dd
+    }
+    if ( mm < 10) {
+        mm = '0' + mm
+    }
+    today = yyyy+'-'+mm+'-'+dd;
+    return today
+}
+
 // HTML Assignments
-$tripStart.attr('min', `${new Date().toISOString()}`, 'value', `${new Date().toISOString()}`);
-$tripEnd.attr('min', `${new Date().toISOString()}`, 'value', `${new Date().toISOString()}`);
+$tripStart.attr('min', `${dateMin()}`, 'value', ``);
+$tripEnd.attr('min', `${dateMin()}`, 'value', ``);
 
 let $mapWidth = $map.width();
 $map.css('height', `${$mapWidth}px` );

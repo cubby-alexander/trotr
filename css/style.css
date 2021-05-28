@@ -11,13 +11,10 @@ html, body {
     background-color: #fdfffd;
 }
 
-h1 {
-    font-weight: 500;
-}
-
 h3 {
     font-weight: 300;
     margin: 0 0 5px 0;
+    font-size: 22px;
 }
 
 header {
@@ -26,22 +23,22 @@ header {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: space-between;
-    height: 60px;
+    height: 70px;
     background-color: #002a00;
 }
 
 .hamburger {
     color: #f0f8f2;
-    padding: 0 20px;
+    padding: 0 25px;
 }
 
 #logo-image {
-    height: 40px;
-    padding: 0 10px;
+    height: 50px;
+    padding: 0 15px;
 }
 
 main {
-    width: 90%;
+    width: 92%;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
@@ -49,9 +46,9 @@ main {
 }
 
 #title {
-    align-self: center;
-    margin: 25px 0 5px 0;
-    font-size: 22px;
+    margin: 20px 0 0 0;
+    font-weight: 400;
+    font-size: 28px;
 }
 
 #dates, #location-search, #fence, #confirm {
@@ -59,30 +56,46 @@ main {
     width: 100%;
 }
 
+#date-pickers {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
 label {
     font-size: 11px;
     font-weight: 300;
     color: #848484;
+    box-sizing: border-box;
     display: inline-block;
-    width: 49%;
+    width: 50%;
     padding: 0;
 }
 
 label span {
-    display: block;
     margin: 0 2px;
 }
 
 label input {
+    padding: 10px;
+    border: 1px solid #929292;
+    border-radius: 3px;
+}
+
+label input#address {
     width: 90%;
-    padding: 4px;
+    line-height: 23px;
 }
 
 input::-webkit-datetime-edit, label input::placeholder {
-    font-size: 13.3px;
+    font-size: 16px;
     font-weight: 300;
     color: #313131;
     font-family: 'Prompt', sans-serif;
+}
+
+input[type="date" i]::-webkit-calendar-picker-indicator {
+    margin-inline-start: 0;
 }
 
 #location-search label {
@@ -91,7 +104,7 @@ input::-webkit-datetime-edit, label input::placeholder {
 
 #fence-submit {
     color: #f0f8f2;
-    padding: 6px 8px;
+    padding: 15px 8px;
     margin: 0;
     width: 18%;
     background-color: #3b814a;
@@ -101,6 +114,7 @@ input::-webkit-datetime-edit, label input::placeholder {
 
 #map {
     margin: 20px 0 0 0;
+    border-radius: 3px;
 }
 
 /* Tooltip container */
@@ -143,14 +157,14 @@ input::-webkit-datetime-edit, label input::placeholder {
 }
 
 #travel-summary {
-    font-size: 14px;
+    font-size: 16px;
     font-weight: 300;
 }
 
 #confirm-trip {
     color: #f0f8f2;
-    padding: 15px 20px;
-    font-size: 14px;
+    padding: 15px 35px;
+    font-size: 16px;
     margin: 30px 0;
     background-color: #002a00;
     border-radius: 3px;
@@ -171,7 +185,7 @@ input::-webkit-datetime-edit, label input::placeholder {
 
 .avatar {
     border-radius: 100%;
-    height: 60px;
+    height: 68px;
 }
 
 .descriptors {
@@ -179,7 +193,7 @@ input::-webkit-datetime-edit, label input::placeholder {
     flex-direction: column;
     justify-content: center;
     color: #1c1c1c;
-    width: 40%;
+    width: 42%;
 }
 
 .interactors {
@@ -187,11 +201,11 @@ input::-webkit-datetime-edit, label input::placeholder {
 }
 
 .interactors button {
-    padding: 10px;
-    margin: 0 3px;
+    padding: 15px 12px;
+    margin: 0;
     background-color: #3b814a;
     border-radius: 3px;
-    border: 0px;
+    border-width: 0;
 }
 
 .interactors button:hover {
@@ -204,6 +218,7 @@ input::-webkit-datetime-edit, label input::placeholder {
 
 #message {
     background-color: #3b814a;
+    padding: 15px;
 }
 
 #connect {
@@ -212,13 +227,13 @@ input::-webkit-datetime-edit, label input::placeholder {
 
 #name {
     font-weight: 500;
-    font-size: 14px;
+    font-size: 18px;
 }
 
 #location, #overlap {
     color: #505050;
     font-weight: 300;
-    font-size: 11px;
+    font-size: 14px;
     margin-left: 3px;
 }
 
