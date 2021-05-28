@@ -17,5 +17,12 @@ Trotr is a prototype with a basic feature-set to share region-level location wit
 
 ![screenshot](images/readme/screen5.png)
 
+![screenshot](images/readme/screen6.png)
+
 
 ##Future Features
+
+ - See trips and domestic breakdowns as a single timeline
+ - Message friends through app and see content as SMS
+ - Coordinate availability for event planning with friends
+ - "Happening Now" feature to see what friends in your area have publicly shared
